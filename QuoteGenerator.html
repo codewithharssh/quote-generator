@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+        <title></title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cookie&family=Poppins&family=Roboto:wght@300&display=swap');
+*, *::after, *::before{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#4285F4;    
+font-family: 'poppins', sans-serif;
+}
+
+.container{
+padding:20px 20px 30px 20px;    
+background:white;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+border-radius:7px;
+width:340px;
+}
+
+.container h1{
+text-align:center;
+font-size:22px;
+}
+
+.container .fa-quote-left{
+font-size:30px;
+margin-top:25px;
+}
+
+.container .quote{
+margin-top:5px;
+font-size:16px;
+}
+
+.container .author{
+float:right;    
+margin-top:40px;
+font-weight:300;
+font-style:italic;
+position:relative;
+left:20px;
+}
+
+.container .fa-quote-right{
+font-size:30px;
+float:right;
+margin-top:5px;
+}
+
+.container .new-quote-btn{
+all:unset; 
+height:45px;
+width:300px;
+color:white;
+background:#4285F4;    
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:30px;
+cursor:pointer;
+position:relative;
+top:10px;
+}
+
+.container .speak,.container .copy,.container .twitter{
+all:unset;  
+height:50px;
+width:50px;
+border-radius:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+border:1px solid black;
+float:left;
+margin-left:35px;
+margin-top:30px;
+transition:all .3s;
+}
+
+
+.container .speak:hover,.container .copy:hover,.container .twitter:hover{
+background:#4285F4; 
+color:white;
+border-color:#4285F4;
+}
+
+.new-quote-btn.click-animation{
+transform:scale(1.05);
+transition:all .2s;
+}
+
+.copy span{
+position:absolute; 
+font-size:9px;
+font-style:italic;
+display:none;
+}
+
+.made-by{
+height:50px;    
+width:100%;
+background:white;
+position:absolute;
+bottom:0;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.made-by a{
+text-decoration:none;
+color:#4285F4;
+text-transform:uppercase;
+font-size:18px;
+}
+</style>        
+</head>
+
+<body>
+ <div class="container">
+    <h1>Quote of the day</h1> 
+ <i class="fa-solid fa-quote-left"></i>
+ <p class="quote">A dream is your creative vision for your life in the future. You must break out of your current comfort zone and become comfortable with the unfamiliar and the unknown.</p>
+ <i class="fa-solid fa-quote-right"></i>
+ <p class="author">- Denis Waitley</p>
+ <button class="new-quote-btn">New Quote</button>
+ <div class="speak">
+ <i class="fa-solid fa-volume-high"></i>
+ </div>
+ 
+ <div class="copy">
+ <i class="fa-solid fa-copy"></i>
+ <span>Copied!</span>
+ </div>
+
+ <div class="twitter">
+   <i class="fa-brands fa-twitter"></i>
+ </div>
+ </div>
+ 
+<div class="made-by">
+ <a href="https://instagram.com/codewithharsh_?igshid=YmMyMTA2M2Y=">Made By Harsh Gupta</a>
+</div>
+ <script>
+let generateQuoteBtn = document.querySelector('.new-quote-btn');
+let quote = document.querySelector('.quote');
+let author = document.querySelector('.author');
+let copyBtn = document.querySelector('.copy');
+let copyIcon = document.querySelector('.copy i');
+let copyText = document.querySelector('.copy span');
+let speakBtn = document.querySelector('.speak');
+let twitterBtn = document.querySelector('.twitter');
+
+const url = "https://api.quotable.io/random";
+
+generateQuoteBtn.addEventListener('click',()=>{
+ generateQuoteBtn.classList.add('click-animation'); 
+  getQuote();
+setTimeout(()=>{
+ generateQuoteBtn.classList.remove('click-animation'); 
+},200)
+speechSynthesis.cancel();
+})
+
+let getQuote =()=>{
+  fetch(url).then((res) => res.json()).then((data)=>{
+  // console.log(data.content)
+  // console.log(data.author)
+  quote.innerHTML = data.content;
+  author.innerHTML = '-' + data.author;
+  });   
+}
+
+copyBtn.addEventListener('click',()=>{
+ navigator.clipboard.writeText(quote.textContent);
+ copyIcon.style.display = 'none';
+ copyText.style.display = 'block';
+ setTimeout(()=>{
+ copyIcon.style.display = 'block';
+ copyText.style.display = 'none';
+ },400)
+})
+
+speakBtn.addEventListener('click',()=>{
+let speech = new SpeechSynthesisUtterance();
+speech.text = `${quote.textContent} by ${author.textContent}`;
+speechSynthesis.speak(speech);
+});
+
+twitterBtn.addEventListener('click',()=>{
+ let tweetUrl = `https://twitter.com/intent/tweet?url=${quote.textContent}                              ${author.textContent}`;
+ window.open(tweetUrl, "_blank");        
+});
+
+getQuote();
+ </script>
+</body>
+
+</html>
